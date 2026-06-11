@@ -1,0 +1,268 @@
+### ─────────────────────────────────────────────────────────
+### Xeno Mini CRM — API Test Requests
+### Open in VS Code with REST Client extension (humao.rest-client)
+### ─────────────────────────────────────────────────────────
+
+### 1. Health Check
+GET http://localhost:3000/api/health
+
+### ─────────────────────────────────────────────────────────
+
+### 2. Win-back lapsed customers
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "I want to win back customers who used to buy regularly but stopped in the last 3 months"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 3. Target champions (recent + frequent + high-value)
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "Show me my best customers — loyal, recent buyers who spend a lot"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 4. Find new customers to nurture
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "Find customers who bought for the first time in the last month"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 5. At-risk dormant segment
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "Customers who haven't purchased in over 90 days and only bought once or twice"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 6. Mid-value cooling off
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "I want customers who bought 60 days ago but not in last 30"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 7. Big spenders across all time
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "Show me customers who have spent more than 15000 rupees total"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 8. Frequent buyers with low spend (upsell opportunity)
+POST http://localhost:3000/api/chat
+Content-Type: application/json
+
+{
+  "message": "Find frequent buyers who have placed 5+ orders but spent less than 8000 total — I want to upsell them"
+}
+
+### ═════════════════════════════════════════════════════════
+### PHASE 2: Message Generation (/api/draft-messages)
+### ═════════════════════════════════════════════════════════
+
+### 9. Draft messages for Lapsed High-Value (Fashion)
+POST http://localhost:3000/api/draft-messages
+Content-Type: application/json
+
+{
+  "segment_name": "Lapsed High-Value Shoppers",
+  "persona": "Lapsed High-Value",
+  "count": 47,
+  "avg_lifetime_value": "₹12,400",
+  "last_purchase_avg_days": 65,
+  "frequency_avg": 4.2,
+  "product_preferences": ["jackets", "dresses", "shoes"],
+  "industry": "fashion",
+  "top_cities": ["Delhi", "Mumbai", "Bangalore"]
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 10. Draft messages for Champions (Loyalty)
+POST http://localhost:3000/api/draft-messages
+Content-Type: application/json
+
+{
+  "segment_name": "Champions - VIP Loyal",
+  "persona": "Champions",
+  "count": 92,
+  "avg_lifetime_value": "₹18,500",
+  "last_purchase_avg_days": 12,
+  "frequency_avg": 7.1,
+  "product_preferences": ["premium shirts", "blazers", "watches"],
+  "industry": "fashion",
+  "top_cities": ["Mumbai", "Delhi", "Pune"]
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 11. Draft messages for At-Risk (Budget win-back)
+POST http://localhost:3000/api/draft-messages
+Content-Type: application/json
+
+{
+  "segment_name": "At Risk Budget Shoppers",
+  "persona": "At Risk",
+  "count": 31,
+  "avg_lifetime_value": "₹2,800",
+  "last_purchase_avg_days": 120,
+  "frequency_avg": 1.4,
+  "product_preferences": ["t-shirts", "accessories"],
+  "industry": "fashion",
+  "top_cities": ["Lucknow", "Jaipur", "Ahmedabad"]
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 12. Draft messages for New Customers (Nurture)
+POST http://localhost:3000/api/draft-messages
+Content-Type: application/json
+
+{
+  "segment_name": "First-Time Buyers",
+  "persona": "New Customers",
+  "count": 68,
+  "avg_lifetime_value": "₹1,900",
+  "last_purchase_avg_days": 15,
+  "frequency_avg": 1.0,
+  "product_preferences": ["sneakers", "casual wear"],
+  "industry": "fashion",
+  "top_cities": ["Bangalore", "Hyderabad", "Chennai"]
+}
+
+### ═════════════════════════════════════════════════════════
+### PHASE 1c: Campaign Send (/api/campaigns)
+### ═════════════════════════════════════════════════════════
+###
+### ⚠️  NOTE: customer_ids must be real UUIDs from your DB.
+### Get some with: SELECT id FROM customers LIMIT 5;
+### Replace the placeholder UUIDs below with real ones.
+###
+
+### 13. Send campaign — Lapsed High-Value Win-back
+POST http://localhost:3000/api/campaigns/send
+Content-Type: application/json
+
+{
+  "segment_name": "Lapsed High-Value Shoppers",
+  "persona": "Lapsed High-Value",
+  "message": "Hey! Winter collection is almost sold out. Remember those jackets you loved? Shop now before they're gone → [link]",
+  "channel": "whatsapp",
+  "tone": "Urgent",
+  "estimated_open_rate": "48%",
+  "customer_ids": [
+    "00000000-0000-0000-0000-000000000001",
+    "00000000-0000-0000-0000-000000000002",
+    "00000000-0000-0000-0000-000000000003"
+  ]
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 14. Send campaign — Champions VIP Offer
+POST http://localhost:3000/api/campaigns/send
+Content-Type: application/json
+
+{
+  "segment_name": "Champions - VIP Loyal",
+  "persona": "Champions",
+  "message": "VIP Offer: 25% off our new winter collection. This exclusive deal is just for our best customers. Claim offer in 24hrs → [link]",
+  "channel": "whatsapp",
+  "tone": "Value",
+  "estimated_open_rate": "55%",
+  "customer_ids": [
+    "00000000-0000-0000-0000-000000000004",
+    "00000000-0000-0000-0000-000000000005"
+  ]
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 15. Validation error — missing required fields
+POST http://localhost:3000/api/campaigns/send
+Content-Type: application/json
+
+{
+  "segment_name": "Test",
+  "message": "Hello!"
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 16. Get campaign stats (replace :id with a real campaign UUID)
+GET http://localhost:3000/api/campaigns/00000000-0000-0000-0000-000000000001/stats
+
+### ═════════════════════════════════════════════════════════
+### PHASE 1d: Channel Service (localhost:5001)
+### Start with: npm run channel
+### ═════════════════════════════════════════════════════════
+
+### 17. Channel Service health check
+GET http://localhost:5001/health
+
+### ─────────────────────────────────────────────────────────
+
+### 18. Simulate delivery for 3 messages
+### Watch the main CRM terminal for webhook callbacks arriving!
+POST http://localhost:5001/simulate
+Content-Type: application/json
+
+{
+  "campaign_id": "test-campaign-001",
+  "channel": "whatsapp",
+  "callback_url": "http://localhost:3000/api/webhooks/channel-events",
+  "messages": [
+    {
+      "customer_id": "00000000-0000-0000-0000-000000000001",
+      "phone": "+91-9876543210",
+      "message": "Hey! Winter collection is almost sold out. Shop now →",
+      "channel": "whatsapp"
+    },
+    {
+      "customer_id": "00000000-0000-0000-0000-000000000002",
+      "phone": "+91-8765432109",
+      "message": "Hey! Winter collection is almost sold out. Shop now →",
+      "channel": "whatsapp"
+    },
+    {
+      "customer_id": "00000000-0000-0000-0000-000000000003",
+      "phone": "+91-7654321098",
+      "message": "Hey! Winter collection is almost sold out. Shop now →",
+      "channel": "whatsapp"
+    }
+  ]
+}
+
+### ─────────────────────────────────────────────────────────
+
+### 19. Manual webhook test (simulate a callback to main CRM)
+POST http://localhost:3000/api/webhooks/channel-events
+Content-Type: application/json
+
+{
+  "campaign_id": "test-campaign-001",
+  "customer_id": "00000000-0000-0000-0000-000000000001",
+  "phone": "+91-9876543210",
+  "event_type": "delivered",
+  "timestamp": "2026-06-10T14:22:35Z"
+}
