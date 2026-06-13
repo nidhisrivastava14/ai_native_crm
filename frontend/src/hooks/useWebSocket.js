@@ -38,7 +38,8 @@ export default function useWebSocket(campaignId) {
     // Don't connect until we have a campaign to track
     if (!campaignId) return;
 
-    const socket = io(window.location.origin, {
+    const socketUrl = import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_URL || window.location.origin;
+    const socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,

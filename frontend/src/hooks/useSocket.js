@@ -27,7 +27,8 @@ export default function useSocket(campaignId) {
   useEffect(() => {
     // Connect to the CRM backend Socket.io server
     // In dev, Vite proxies /socket.io to localhost:3000
-    const socket = io(window.location.origin, {
+    const socketUrl = import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_URL || window.location.origin;
+    const socket = io(socketUrl, {
       transports: ['websocket', 'polling'],
     });
 

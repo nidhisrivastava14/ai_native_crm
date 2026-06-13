@@ -3,7 +3,7 @@
 // API client — simple fetch wrapper for backend calls
 // ─────────────────────────────────────────────────────────────
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
 
 /**
  * Makes an API request to the CRM backend.
