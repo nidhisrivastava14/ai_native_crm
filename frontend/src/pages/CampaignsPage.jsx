@@ -9,7 +9,8 @@ export default function CampaignsPage({ onNavigate }) {
   const [selectedFunnel, setSelectedFunnel] = useState(null);
 
   useEffect(() => {
-    fetch('/api/campaigns')
+   // fetch('/api/campaigns')
+    fetch(`${import.meta.env.VITE_API_URL}/api/campaigns`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch campaigns');
         return res.json();
@@ -27,7 +28,8 @@ export default function CampaignsPage({ onNavigate }) {
 
   const handleRowClick = (campaignId) => {
     setSelectedFunnel(null);
-    fetch(`/api/analytics/funnel/${campaignId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/analytics/funnel/${campaignId}`)
+   // fetch(`/api/analytics/funnel/${campaignId}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch funnel stats');
         return res.json();
