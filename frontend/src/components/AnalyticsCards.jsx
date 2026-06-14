@@ -58,41 +58,64 @@ export function ConversionFunnel({ funnel, revenue, hideTitle = false }) {
   if (!funnel) return null;
 
   const stages = [
-    { label: 'Sent', value: funnel.sent, pct: 100, color: 'var(--primary-light)' },
-    { label: 'Delivered', value: funnel.delivered, pct: funnel.sent > 0 ? Math.round((funnel.delivered / funnel.sent) * 100) : 0, color: 'var(--success)' },
-    { label: 'Opened', value: funnel.opened, pct: funnel.delivered > 0 ? Math.round((funnel.opened / funnel.delivered) * 100) : 0, color: 'var(--info)' },
-    { label: 'Clicked', value: funnel.clicked, pct: funnel.opened > 0 ? Math.round((funnel.clicked / funnel.opened) * 100) : 0, color: 'var(--warning)' },
-    { label: 'Purchased', value: funnel.purchased, pct: funnel.clicked > 0 ? Math.round((funnel.purchased / funnel.clicked) * 100) : 0, color: 'var(--error)' }
+    { label: 'Sent', value: funnel.sent, pct: 100, color: 'var(--blue-500)' },
+    { label: 'Delivered', value: funnel.delivered, pct: funnel.sent > 0 ? Math.round((funnel.delivered / funnel.sent) * 100) : 0, color: 'var(--green-500)' },
+    { label: 'Opened', value: funnel.opened, pct: funnel.delivered > 0 ? Math.round((funnel.opened / funnel.delivered) * 100) : 0, color: 'var(--purple-500)' },
+    { label: 'Clicked', value: funnel.clicked, pct: funnel.opened > 0 ? Math.round((funnel.clicked / funnel.opened) * 100) : 0, color: 'var(--orange-500)' },
+    { label: 'Purchased', value: funnel.purchased, pct: funnel.clicked > 0 ? Math.round((funnel.purchased / funnel.clicked) * 100) : 0, color: 'var(--red-500)' }
   ];
 
   const convRate = funnel.sent > 0 ? ((funnel.purchased / funnel.sent) * 100).toFixed(1) : '0';
 
   return (
-    <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: '8px' }}>
       {!hideTitle && <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Campaign Performance & Funnel</h3>}
       
-      {/* Horizontal funnel steps bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-        {stages.map((stage) => (
-          <div key={stage.label} style={{
-            flex: '1 1 150px',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border)',
-            borderRadius: '6px',
-            padding: '12px',
-            position: 'relative'
-          }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-              {stage.label}
-            </div>
-            <div style={{ fontSize: '24px', fontWeight: 700, margin: '4px 0' }}>
-              {stage.value}
-            </div>
-            <div style={{ fontSize: '12px', color: stage.color, fontWeight: 600 }}>
-              {stage.pct}% {stage.label !== 'Sent' && 'of prev'}
-            </div>
-          </div>
-        ))}
+      {/* Centered Vertical Funnel Waterfall */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '100%', padding: '10px 0' }}>
+        {stages.map((stage, idx) => {
+          const sentValue = stages[0].value || 1;
+          // Calculate proportional width between 35% and 100% based on value dropoff
+          const relativeWidth = Math.max(35, Math.min(100, (stage.value / sentValue) * 100));
+          
+          return (
+            <React.Fragment key={stage.label}>
+              {idx > 0 && (
+                <div style={{ color: 'var(--text-muted)', opacity: 0.6, fontSize: '12px', margin: '2px 0', lineHeight: 1 }}>
+                  ▼
+                </div>
+              )}
+              <div 
+                style={{
+                  width: `${relativeWidth}%`,
+                  minWidth: '220px',
+                  background: 'linear-gradient(135deg, var(--bg-hover) 0%, var(--bg-secondary) 100%)',
+                  border: '1px solid var(--border-default)',
+                  borderLeft: `4px solid ${stage.color}`,
+                  borderRadius: '6px',
+                  padding: '10px 14px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  boxShadow: 'var(--shadow-sm)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {stage.label}
+                  </div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    {idx === 0 ? 'Total Audience' : `${stage.pct}% conversion`}
+                  </div>
+                </div>
+                <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {stage.value}
+                </div>
+              </div>
+            </React.Fragment>
+          );
+        })}
       </div>
 
       <div style={{
@@ -110,7 +133,7 @@ export function ConversionFunnel({ funnel, revenue, hideTitle = false }) {
       }}>
         <span>Conversion Rate: {convRate}%</span>
         <span>ROI: {revenue?.roi || '0%'}</span>
-        <span>Revenue: ₹{revenue?.total_attributed_amount?.toLocaleString('en-IN') || 0}</span>
+        <span>Revenue: ₹{(revenue?.total_attributed_amount || revenue?.total_attributed || 0).toLocaleString('en-IN')}</span>
       </div>
     </div>
   );

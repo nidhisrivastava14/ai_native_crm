@@ -46,7 +46,7 @@ async function getCampaignFunnel(req, res) {
         revenue: {
           total_attributed: parseFloat(total_attributed),
           cost_per_send: 0.50,
-          roi: ((parseFloat(total_attributed) - (sent * 0.50)) / (sent * 0.50) * 100).toFixed(0) + '%'
+          roi: (((parseFloat(total_attributed) - (sent * 0.50)) / (sent * 0.50) * 100) > 999) ? '999%+' : (((parseFloat(total_attributed) - (sent * 0.50)) / (sent * 0.50) * 100).toFixed(0) + '%')
         }
       };
       return res.json(response);
@@ -102,7 +102,7 @@ async function getCampaignFunnel(req, res) {
       revenue: {
         total_attributed: parseFloat(total_attributed),
         cost_per_send: 0.50,
-        roi: ((parseFloat(total_attributed) - (sent * 0.50)) / (sent * 0.50) * 100).toFixed(0) + '%'
+        roi: (((parseFloat(total_attributed) - (sent * 0.50)) / (sent * 0.50) * 100) > 999) ? '999%+' : (((parseFloat(total_attributed) - (sent * 0.50)) / (sent * 0.50) * 100).toFixed(0) + '%')
       }
     };
     

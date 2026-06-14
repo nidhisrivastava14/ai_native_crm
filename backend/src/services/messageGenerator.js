@@ -48,7 +48,7 @@ function getFallbackVariants(persona, count) {
       {
         tone: 'Value',
         psychology: 'Exclusivity + Reward',
-        text: `As a valued ${persona} customer, you've unlocked early access to our exclusive collection. Claim your offer before it goes public [link]`,
+        text: `As a valued customer, you've unlocked early access to our exclusive collection. Claim your offer before it goes public [link]`,
         cta: 'Claim offer',
         emoji_count: 0,
       },
@@ -86,6 +86,7 @@ RULES:
 - Message 3: Value tone (exclusivity, VIP). No emoji. CTA: "Claim offer"
 - Each message UNDER 160 characters
 - Use ₹ for currency, [link] as placeholder
+- Do NOT include the raw segment name/persona (like "${persona}") in the message text. If you want to address them, write "valued customer" or "VIP member" or a brand name like "Xeno" instead.
 
 Return this exact JSON structure:
 {"messages":[{"tone":"Urgent","psychology":"Scarcity + FOMO","text":"...","cta":"...","emoji_count":1},{"tone":"Personal","psychology":"Nostalgia + Relationship","text":"...","cta":"...","emoji_count":1},{"tone":"Value","psychology":"Exclusivity + Reward","text":"...","cta":"...","emoji_count":0}],"recommended_variant":0,"reasoning":"..."}`;

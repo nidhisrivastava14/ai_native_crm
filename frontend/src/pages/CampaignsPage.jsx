@@ -132,7 +132,7 @@ export default function CampaignsPage({ onNavigate }) {
                         <td style={{ padding: '16px 20px' }}>{camp.total_opened || 0}</td>
                         <td style={{ padding: '16px 20px' }}>{camp.total_clicked || 0}</td>
                         <td style={{ padding: '16px 20px' }}>₹{(camp.revenue || 0).toLocaleString()}</td>
-                        <td style={{ padding: '16px 20px' }}>{camp.roi || 0}%</td>
+                        <td style={{ padding: '16px 20px' }}>{camp.roi > 999 ? '999%+' : `${camp.roi || 0}%`}</td>
                         <td style={{ padding: '16px 20px', textAlign: 'right' }}>
                           <button
                             className="btn secondary"

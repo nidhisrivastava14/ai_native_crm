@@ -11,9 +11,9 @@
 
 // ── Channel open rates by tone ────────────────────────────────
 const CHANNEL_DATA = {
-  whatsapp: { name: 'WhatsApp', avgOpen: 82, icon: '💬' },
-  email:    { name: 'Email',    avgOpen: 25, icon: '📧' },
-  sms:      { name: 'SMS',      avgOpen: 98, icon: '📱' },
+  whatsapp: { name: 'WhatsApp', avgOpen: 34, icon: '💬' },
+  email:    { name: 'Email',    avgOpen: 18, icon: '📧' },
+  sms:      { name: 'SMS',      avgOpen: 22, icon: '📱' },
 };
 
 // ── Tone → Channel mapping ────────────────────────────────────
