@@ -54,7 +54,7 @@ export function ChurnRiskCard({ segments }) {
   );
 }
 
-export function ConversionFunnel({ funnel, revenue }) {
+export function ConversionFunnel({ funnel, revenue, hideTitle = false }) {
   if (!funnel) return null;
 
   const stages = [
@@ -69,7 +69,7 @@ export function ConversionFunnel({ funnel, revenue }) {
 
   return (
     <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Campaign Performance & Funnel</h3>
+      {!hideTitle && <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Campaign Performance & Funnel</h3>}
       
       {/* Horizontal funnel steps bar */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>

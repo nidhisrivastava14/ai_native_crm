@@ -400,7 +400,10 @@ router.get('/', async (req, res) => {
           c.channel,
           c.status,
           c.created_at,
-          COALESCE(cs.total_sent, 0)::INT AS messages_sent,
+          COALESCE(cs.total_sent, 0)::INT AS total_sent,
+          COALESCE(cs.total_delivered, 0)::INT AS total_delivered,
+          COALESCE(cs.total_opened, 0)::INT AS total_opened,
+          COALESCE(cs.total_clicked, 0)::INT AS total_clicked,
           COALESCE(o.revenue, 0)::NUMERIC(10,2) AS revenue,
           COALESCE(o.orders_count, 0)::INT AS orders
         FROM campaigns c
@@ -413,7 +416,17 @@ router.get('/', async (req, res) => {
         ORDER BY c.created_at DESC
       `;
       const result = await pool.query(query);
-      return res.json(result.rows);
+      const rowsWithRoi = result.rows.map(row => {
+        const cost = (row.total_sent || 0) * 0.50;
+        const rev = parseFloat(row.revenue || 0);
+        const roi = cost > 0 ? Math.round(((rev - cost) / cost) * 100) : 0;
+        return {
+          ...row,
+          messages_sent: row.total_sent,
+          roi
+        };
+      });
+      return res.json(rowsWithRoi);
     } else {
       // Mock Mode
       const { getMockOrders } = require('../services/attributionService');
@@ -421,18 +434,19 @@ router.get('/', async (req, res) => {
       
       const allMockOrders = getMockOrders() || [];
       const mapped = (MOCK_CAMPAIGNS || []).map(c => {
-        const stats = mockStatsStore.get(c.id);
-        
-        let sent = 0;
-        if (stats) {
-          sent = stats.total_sent;
-        } else {
-          sent = c.id === 'mock-campaign-1' ? 150 : (c.id === 'mock-campaign-2' ? 200 : 80);
-        }
+        const stats = mockStatsStore.get(c.id) || {
+          total_sent: c.id === 'mock-campaign-1' ? 150 : (c.id === 'mock-campaign-2' ? 200 : 80),
+          total_delivered: c.id === 'mock-campaign-1' ? 140 : (c.id === 'mock-campaign-2' ? 180 : 75),
+          total_opened: c.id === 'mock-campaign-1' ? 80 : (c.id === 'mock-campaign-2' ? 100 : 30),
+          total_clicked: c.id === 'mock-campaign-1' ? 30 : (c.id === 'mock-campaign-2' ? 40 : 10),
+        };
 
         const campaignOrders = allMockOrders.filter(o => String(o.attributed_campaign_id) === String(c.id));
         const ordersCount = campaignOrders.length;
         const revenue = campaignOrders.reduce((sum, o) => sum + o.amount, 0);
+
+        const cost = (stats.total_sent || 0) * 0.50;
+        const roi = cost > 0 ? Math.round(((revenue - cost) / cost) * 100) : 0;
 
         return {
           id: c.id,
@@ -441,9 +455,14 @@ router.get('/', async (req, res) => {
           channel: c.channel,
           status: c.status,
           created_at: c.created_at,
-          messages_sent: sent,
+          total_sent: stats.total_sent,
+          total_delivered: stats.total_delivered,
+          total_opened: stats.total_opened,
+          total_clicked: stats.total_clicked,
+          messages_sent: stats.total_sent,
           revenue,
-          orders: ordersCount
+          orders: ordersCount,
+          roi
         };
       });
       // Sort newest first

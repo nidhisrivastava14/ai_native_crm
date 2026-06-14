@@ -1478,5 +1478,23 @@ body.light .chat-input-box:focus-within {
   background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-elevated) 100%);
 }
 
+.btn-export {
+  background: var(--blue-500) !important;
+  color: white !important;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.btn-export:hover {
+  background: var(--blue-600) !important;
+  box-shadow: 0 4px 12px var(--blue-glow);
+}
+
+
 
 
